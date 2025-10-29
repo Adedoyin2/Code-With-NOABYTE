@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FSS Coding Site</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: #0a0a23;
+      color: white;
+    }
+    .sidebar {
+      background: #111;
+      padding: 1rem;
+      display: flex;
+      overflow-x: auto;
+      justify-content: space-around;
+    }
+    .sidebar a {
+      color: white;
+      margin: 0 0.5rem;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .main {
+      flex-grow: 1;
+      padding: 1rem;
+    }
+    header {
+      text-align: center;
+      background: #1e1e3f;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    header h1 {
+      font-size: 1.5rem;
+    }
+    .hero h2 {
+      font-size: 1.2rem;
+    }
+    .editor-container {
+      display: none;
+      flex-direction: column;
+      margin-bottom: 1rem;
+    }
+    .editor-container.active {
+      display: flex;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      background: #333;
+      color: #0ff;
+      padding: 1rem;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+    iframe {
+      width: 100%;
+      height: 200px;
+      border: 1px solid #ccc;
+      background: white;
+    }
+    .chat {
+      background: #333;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    #chatInput {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 4px;
+      border: none;
+      margin-top: 0.5rem;
+    }
+    #chatBox {
+      border: 1px solid #ccc;
+      padding: 1rem;
+      height: 150px;
+      overflow-y: scroll;
+      background: #222;
+      margin-top: 1rem;
+    }
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      color: #aaa;
+    }
+    @media (min-width: 768px) {
+      body {
+        flex-direction: row;
+      }
+      .sidebar {
+        flex-direction: column;
+        width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <a onclick="switchEditor('html')">🔤 HTML</a>
+    <a onclick="switchEditor('css')">🎨 CSS</a>
+    <a onclick="switchEditor('js')">🧠 JS</a>
+    <a onclick="switchEditor('python')">🐍 PY</a>
+    <a onclick="switchEditor('sql')">🗃 SQL</a>
+    <a onclick="switchEditor('chat')">🤖AI Chat</a>
+  </div>
+
+  <div class="main">
+    <header>
+      <h1>Welcome To NOABYTE Coding Site</h1>
+      <div class="hero">
+        <h2>Learn how to Code</h2>
+        <p>With the world's largest web developer site</p>
+        <a href="inndex/2Index.html"><button onclick="startLearning()">Start Learning</button></a>
+      </div>
+      <button id="notifyBtn">🔔</button>
+    </header>
+
+    <div id="html" class="editor-container active">
+      <h3>HTML Editor</h3>
+      <textarea id="htmlCode" placeholder="Type HTML here..."></textarea>
+    </div>
+    <div id="css" class="editor-container">
+      <h3>CSS Editor</h3>
+      <textarea id="cssCode" placeholder="Type CSS here..."></textarea>
+    </div>
+    <div id="js" class="editor-container">
+      <h3>JavaScript Editor</h3>
+      <textarea id="jsCode" placeholder="Type JavaScript here..."></textarea>
+    </div>
+    <div id="python" class="editor-container">
+      <h3>Python Editor (display only)</h3>
+      <textarea placeholder="Write Python code..."></textarea>
+    </div>
+    <div id="sql" class="editor-container">
+      <h3>SQL Editor (display only)</h3>
+      <textarea placeholder="Write SQL query..."></textarea>
+    </div>
+    <div id="chat" class="editor-container">
+      <section class="chat">
+        <h3>AI Assistant</h3>
+        <input type="text" id="chatInput" placeholder="Ask something...">
+        <div id="chatBox"></div>
+      </section>
+    </div>
+
+    <h3>Outcome</h3>
+    <iframe id="preview"></iframe>
+
+    <footer>
+      <p>&copy; 2025 FSS Coding Site. Created by NOABYTE   </p>
+    </footer>
+  </div>
+
+  <script>
+    const editors = document.querySelectorAll('.editor-container');
+    function switchEditor(type) {
+      editors.forEach(editor => editor.classList.remove('active'));
+      document.getElementById(type).classList.add('active');
+    }
+
+    function startLearning() {
+      alert("Let's start learning!");
+    }
+
+    const htmlInput = document.getElementById('htmlCode');
+    const cssInput = document.getElementById('cssCode');
+    const jsInput = document.getElementById('jsCode');
+    const preview = document.getElementById('preview');
+
+    function updatePreview() {
+      const html = htmlInput.value;
+      const css = "<style>" + cssInput.value + "</style>";
+      const js = "<script>" + jsInput.value + "<\/script>";
+      preview.srcdoc = html + css + js;
+    }
+
+    htmlInput.addEventListener("input", updatePreview);
+    cssInput.addEventListener("input", updatePreview);
+    jsInput.addEventListener("input", updatePreview);
+
+    const chatInput = document.getElementById("chatInput");
+    chatInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        sendChat();
+      }
+    });
+
+    async function sendChat() {
+      const chatBox = document.getElementById("chatBox");
+      const userText = chatInput.value;
+      if (!userText) return;
+      const userMessage = document.createElement("div");
+      userMessage.textContent = "You: " + userText;
+      chatBox.appendChild(userMessage);
+
+      try {
+        const response = await fetch("chat.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userText })
+        });
+        const data = await response.json();
+        const reply = document.createElement("div");
+        reply.textContent = "NOABYTE: " + data.reply;
+        chatBox.appendChild(reply);
+      } catch (error) {
+        const errorMsg = document.createElement("div");
+        errorMsg.textContent = "NOABYTE: Is Unable to respond right now, check your internet connection and reload.";
+        chatBox.appendChild(errorMsg);
+      }
+
+      chatInput.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    document.getElementById("notifyBtn").addEventListener("click", function () {
+      alert("You have no new notifications.");
+    });
+  </script>
+</body>
+</html>
